@@ -4,8 +4,8 @@ let tasks = [...data];
 
 export const getTasks = () => tasks;
 
-export const createTask = (title) => {
-    const newTask = {id: data.length+1, title, completed:false};
+export const createTask = (tarea) => {
+    const newTask = {id: Date.now(), tarea, completada:false};
     tasks.push(newTask);
     return newTask;
 };
@@ -23,6 +23,6 @@ export const updateTask = (id, updated) => {
 
 export const completionTask = (id) => {
     tasks = tasks.map(task =>
-        task.id === id ? {...task, completed:!task.completed} : task
+        task.id === id ? {...task, completada:!task.completada} : task
     );
 }

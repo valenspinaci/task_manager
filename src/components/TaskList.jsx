@@ -7,13 +7,12 @@ const TaskList = () =>{
     const [newTask, setNewTask] = useState("");
 
     useEffect(()=>{
-        setTasks(getTasks);
+        setTasks(getTasks());
     }, [])
 
     const handleAddTask = () => {
-        if(!newTask.trim()) return;
-        const newTarea = createTask(newTask);
-        setTasks([...tasks, newTask]);
+        console.log(createTask(newTask));
+        setTasks(getTasks());
         setNewTask("");
     }
 
