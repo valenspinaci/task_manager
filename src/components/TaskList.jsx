@@ -63,18 +63,23 @@ const TaskList = () =>{
 
     return(
         <div>
-            <h2>
-                Mis tareas
-            </h2>
+            <div className='bg-black flex h-20'>
+                <h1 className='font-bold inline flex-6'>Task Manager</h1>
 
-            <input
-                type="text"
-                placeholder="Nueva tarea"
-                value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
-            />
+                <div className="flex-6">
+                    <input
+                        type="text"
+                        placeholder="Nueva tarea"
+                        value={newTask}
+                        onChange={(e) => setNewTask(e.target.value)}
+                    />
 
-            <button onClick={handleAddTask}>Agregar</button>
+                    <button onClick={handleAddTask}>Agregar</button>
+                </div>
+                
+            </div>
+
+            
 
             <div>
                 {tasks.length > 0 ? (

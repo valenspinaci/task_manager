@@ -6,10 +6,9 @@ function App() {
 
   return (
     <div>
-      <h1>Task Manager MVP</h1>
       <TaskList/>
     </div>
   )
 }
 
-export default App
+export default App;
