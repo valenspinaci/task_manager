@@ -1,28 +1,29 @@
-import data from "../data/tasks";
+const url = "https://6815585132debfe95dbb694d.mockapi.io/tasks/tasks"
 
-let tasks = [...data];
-
-export const getTasks = () => tasks;
-
-export const createTask = (tarea) => {
-    const newTask = {id: Date.now(), tarea, completada:false};
-    tasks.push(newTask);
-    return newTask;
+export const getTasks = async () => {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data;
 };
 
-export const deleteTask = (id) => {
-    tasks = tasks.filter(task => task.id !== id);
-    return tasks;
+export const createTask = async (title) => {
+    const res = await fetch(url, {
+        method : "POST",
+        headers : { "Content-Type":"application/json"},
+        body: JSON.stringify(title, false)
+    })
+    return await res.json();
 };
 
-export const updateTask = (id, updated) => {
-    tasks = tasks.map(task =>
-        task.id === id ? {...task, ...updated} : task
-    );
+export const deleteTask = async (id) => {
+    await fetch (`${url}/${id}`, {method : "DELETE"})
 };
 
-export const completionTask = (id) => {
-    tasks = tasks.map(task =>
-        task.id === id ? {...task, completada:!task.completada} : task
-    );
-}
+export const updateTask = async (id, updated) => {
+    const res = await fetch(`${url}/${id}`, {
+        method:"PUT",
+        headers : { "Content-Type":"application/json"},
+        body: JSON.stringify(updated)
+    })
+    return await res.json();
+};

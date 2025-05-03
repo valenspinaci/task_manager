@@ -1,36 +1,63 @@
-import { useEffect, useState } from "react"
-import { getTasks, createTask, deleteTask, updateTask, completionTask } from "../services/taskService"
-import TaskItem from "./TaskItem"
+import { useEffect, useState } from "react";
+import { getTasks, createTask, deleteTask, updateTask } from "../services/taskService";
+import TaskItem from "./TaskItem";
 
 const TaskList = () =>{
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState("");
 
-    useEffect(()=>{
-        setTasks(getTasks());
+    const fetchTasks = async () =>{
+        try {
+            const data = await getTasks();
+            setTasks(data);
+        } catch (error) {
+            console.log(`No se pudieron cargar las tareas. ${error}`);
+        }
+    };
+
+    useEffect(() =>{
+        fetchTasks();
     }, [])
 
-    const handleAddTask = () => {
-        console.log(createTask(newTask));
-        setTasks(getTasks());
-        setNewTask("");
+    const handleAddTask = async () => {
+        try {
+            await createTask({title:newTask});
+            await fetchTasks();
+            setNewTask("");
+        } catch (error) {
+            console.log(`No se puede agregar la tarea. ${error}`);
+        }
+        
     }
 
-    const handleDelete = (id) =>{
-        deleteTask(id);
-        setTasks(getTasks());
+    const handleDelete = async (id) =>{
+        try {
+            await deleteTask(id);
+            await fetchTasks();
+        } catch (error) {
+            console.log(`No se pudo eliminar la tarea. ${error}`)
+        }
     }
 
-    const handleToggle = (id) =>{
-        completionTask(id);
-        setTasks(getTasks());
+    const handleToggle = async (task) =>{
+        try {
+            await updateTask(task.id, {completed : !task.completed})
+            fetchTasks();
+        } catch (error) {
+            console.log(`No se pudo tachar la tarea. ${error}`)
+        }
+
     }
 
-    const handleEdit = (task) =>{
-        const newTarea = prompt("Editar tarea: ", task.tarea)
-        if (newTarea !== null && newTarea.trim() !== ""){
-            updateTask(task.id, {tarea:newTarea});
-            setTasks(getTasks());
+    const handleEdit = async (task) =>{
+        const newTarea = prompt("Editar tarea: ", task.title)
+        try {
+            if (newTarea !== null && newTarea.trim() !== ""){
+                await updateTask(task.id, {title:newTarea});
+                await fetchTasks();
+            }
+        } catch (error) {
+            console.log(`No se pudo actualizar la tarea. ${error}`)
         }
     }
 
@@ -50,15 +77,19 @@ const TaskList = () =>{
             <button onClick={handleAddTask}>Agregar</button>
 
             <div>
-                {tasks.map((task) => (
-                    <TaskItem
-                        key={task.id}
-                        task = {task}
-                        onDelete = {handleDelete}
-                        onToggle= {handleToggle}
-                        onEdit= {handleEdit}
-                    />
-                ))}
+                {tasks.length > 0 ? (
+                    tasks.map((task) => (
+                        <TaskItem
+                            key={task.id}
+                            task={task}
+                            onDelete={handleDelete}
+                            onEdit={handleEdit}
+                            onToggle={() => handleToggle(task)}
+                        />
+                    ))
+                ) : (
+                    <p>No hay tareas aún.</p>
+                )}
             </div>
         </div>
     )
